@@ -272,6 +272,7 @@ defmodule Oban.Migration do
       Ecto.Adapters.Postgres -> Oban.Migrations.Postgres
       Ecto.Adapters.SQLite3 -> Oban.Migrations.SQLite
       Ecto.Adapters.MyXQL -> Oban.Migrations.MyXQL
+      Ecto.Adapters.QuackDB -> Oban.Migrations.QuackDB
       _ -> Keyword.fetch!(repo().config(), :migrator)
     end
   end

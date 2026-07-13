@@ -117,3 +117,36 @@ jobs:
       - name: Run dialyzer
         run: mix dialyzer
         if: ${{ matrix.lint }}
+
+  quackdb:
+    name: QuackDB
+    runs-on: ubuntu-24.04
+    env:
+      MIX_ENV: test
+      QUACKDB_ONLY: "1"
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: "29.0"
+          elixir-version: "1.20"
+
+      - uses: actions/cache@v6
+        with:
+          path: |
+            deps
+            _build
+            ~/.cache/quackdb
+            ~/.duckdb/extensions
+          key: ${{ runner.os }}-quackdb-${{ hashFiles('**/mix.lock') }}
+
+      - name: Run mix deps.get
+        run: mix deps.get --only test
+
+      - name: Run mix compile
+        run: mix compile --warnings-as-errors
+
+      - name: Run QuackDB tests
+        run: mix test --only quackdb

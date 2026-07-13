@@ -28,6 +28,23 @@ defmodule Oban.Test.LiteRepo do
   use Ecto.Repo, otp_app: :oban, adapter: Ecto.Adapters.SQLite3
 end
 
+if Code.ensure_loaded?(Ecto.Adapters.QuackDB) do
+  defmodule Oban.Test.QuackRepo do
+    @moduledoc false
+
+    use Ecto.Repo, otp_app: :oban, adapter: Ecto.Adapters.QuackDB
+  end
+
+  defmodule Oban.Test.QuackMigration do
+    @moduledoc false
+
+    use Ecto.Migration
+
+    def up, do: Oban.Migrations.up()
+    def down, do: Oban.Migrations.down()
+  end
+end
+
 defmodule Oban.Test.DolphinRepo do
   @moduledoc false
 

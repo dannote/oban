@@ -158,9 +158,15 @@ Oban ships with engines for [PostgreSQL][postgres], [MySQL][mysql], and [SQLite3
 engine supports the same core functionality, though they have differing levels of maturity and
 suitability for production.
 
+An experimental engine is also available for [DuckDB][duckdb] through [QuackDB][quackdb]. The
+Quack protocol and QuackDB integration aren't production-ready yet; validate durability and
+concurrency for your workload before relying on them for critical jobs.
+
 [postgres]: https://www.postgresql.org/
 [mysql]: https://www.mysql.com/
 [sqlite3]: https://www.sqlite.org/
+[duckdb]: https://duckdb.org/
+[quackdb]: https://hex.pm/packages/quackdb
 
 ## Requirements
 
@@ -169,6 +175,7 @@ Oban requires:
 * Elixir 1.15+
 * Erlang 24+
 * PostgreSQL 14.0+, MySQL 8.4+, or SQLite3 3.37.0+
+* For experimental QuackDB support: Elixir 1.19+, QuackDB 0.5.17+, and DuckDB 1.5.3+
 
 ## Installation
 

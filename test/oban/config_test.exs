@@ -281,6 +281,15 @@ defmodule Oban.ConfigTest do
       assert {Oban.Notifiers.PG, []} = conf.notifier
       assert {Oban.Peers.Isolated, []} = conf.peer
     end
+
+    @tag :quackdb
+    test "setting safe defaults for the QuackDB engine" do
+      conf = conf(engine: Oban.Engines.QuackDB)
+
+      refute conf.prefix
+      assert {Oban.Notifiers.PG, []} = conf.notifier
+      assert {Oban.Peers.Isolated, []} = conf.peer
+    end
   end
 
   describe "node_name/1" do

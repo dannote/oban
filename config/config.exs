@@ -29,6 +29,11 @@ config :oban, Oban.Test.LiteRepo,
   stacktrace: true,
   temp_store: :memory
 
+config :oban, Oban.Test.QuackRepo,
+  log: false,
+  pool_size: System.schedulers_online(),
+  stacktrace: true
+
 config :oban, Oban.Test.DolphinRepo,
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2,

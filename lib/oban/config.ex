@@ -91,6 +91,12 @@ defmodule Oban.Config do
           |> Keyword.put_new(:notifier, {Oban.Notifiers.PG, []})
           |> Keyword.put_new(:peer, {Oban.Peers.Database, []})
 
+        Oban.Engines.QuackDB ->
+          opts
+          |> Keyword.put(:prefix, false)
+          |> Keyword.put_new(:notifier, {Oban.Notifiers.PG, []})
+          |> Keyword.put_new(:peer, {Oban.Peers.Isolated, []})
+
         _ ->
           opts
           |> Keyword.put_new(:notifier, {Oban.Notifiers.Postgres, []})

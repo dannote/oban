@@ -14,12 +14,15 @@ defmodule Oban.Case do
 
       alias Oban.Integration.Worker
       alias Oban.{Config, Job}
-      alias Oban.Test.{DolphinRepo, LiteRepo, Repo, UnboxedRepo}
+      alias Oban.Test.{DolphinRepo, LiteRepo, QuackRepo, Repo, UnboxedRepo}
     end
   end
 
   setup context do
     cond do
+      context[:quackdb] ->
+        :ok
+
       context[:unboxed] ->
         on_exit(fn ->
           UnboxedRepo.delete_all(Oban.Job)

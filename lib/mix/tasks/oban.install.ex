@@ -45,7 +45,12 @@ if Code.ensure_loaded?(Igniter) do
     use Igniter.Mix.Task
 
     @known_repos [Ecto.Repo, AshPostgres.Repo, AshSqlite.Repo]
-    @supported_adapters [Ecto.Adapters.Postgres, Ecto.Adapters.MyXQL, Ecto.Adapters.SQLite3]
+    @supported_adapters [
+      Ecto.Adapters.Postgres,
+      Ecto.Adapters.MyXQL,
+      Ecto.Adapters.QuackDB,
+      Ecto.Adapters.SQLite3
+    ]
 
     @impl Igniter.Mix.Task
     def info(_argv, _composing_task) do
@@ -165,7 +170,7 @@ if Code.ensure_loaded?(Igniter) do
           issue = """
           No compatible Ecto repo found for #{inspect(app_name)}.
 
-          Oban requires PostgreSQL, MySQL, or SQLite3. Found repos with unsupported adapters:
+          Oban requires PostgreSQL, MySQL, SQLite3, or QuackDB. Found repos with unsupported adapters:
           #{unsupported_list}
 
           Specify a compatible repo explicitly with: mix oban.install --repo MyApp.Repo
@@ -213,6 +218,7 @@ if Code.ensure_loaded?(Igniter) do
       case adapter do
         Ecto.Adapters.Postgres -> Oban.Engines.Basic
         Ecto.Adapters.MyXQL -> Oban.Engines.Dolphin
+        Ecto.Adapters.QuackDB -> Oban.Engines.QuackDB
         Ecto.Adapters.SQLite3 -> Oban.Engines.Lite
       end
     end

@@ -5,12 +5,14 @@ defmodule Oban.Engine do
   Engines are responsible for all non-plugin database interaction, from inserting through
   executing jobs.
 
-  Oban ships with three Engine implementations:
+  Oban ships with five Engine implementations:
 
   1. `Basic` — The default engine for development, production, and manual testing mode.
-  2. `Inline` — Designed specifically for testing, it executes jobs immediately, in-memory, as
+  2. `Dolphin` — The engine for running Oban using MySQL.
+  3. `Inline` — Designed specifically for testing, it executes jobs immediately, in-memory, as
      they are inserted.
-  3. `Lite` - The engine for running Oban using SQLite3.
+  4. `Lite` — The engine for running Oban using SQLite3.
+  5. `QuackDB` — An experimental engine for running Oban using DuckDB through QuackDB.
 
   > #### 🌟 SmartEngine {: .info}
   >

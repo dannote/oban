@@ -26,10 +26,10 @@ defmodule Oban.Repo do
   `transaction/3` is wrapped in a bounded retry loop that tolerates transient failures without
   surfacing them to callers:
 
-  * `DBConnection.ConnectionError`, `Postgrex.Error`, and `MyXQL.Error` raised from inside a
-    transaction are retried with backoff. Expected conflicts like serialization failures,
-    deadlocks, and lock-not-available use a shorter delay and higher retry count than unexpected
-    errors.
+  * `DBConnection.ConnectionError`, `Postgrex.Error`, `MyXQL.Error`, and `QuackDB.Error` raised
+    from inside a transaction are retried with backoff. Expected conflicts like serialization
+    failures, deadlocks, and lock-not-available use a shorter delay and higher retry count than
+    unexpected errors.
 
   * `UndefinedFunctionError` raised by the configured repo module is retried on the same loop.
     This absorbs the window during which the repo module is unavailable, e.g. mid-recompile in a
@@ -180,10 +180,10 @@ defmodule Oban.Repo do
   Wraps `c:Ecto.Repo.transaction/2` with an additional `Oban.Config` argument and automatic
   retries with backoff.
 
-  Unexpected errors such as `DBConnection.ConnectionError`, `Postgrex.Error`, or `MyXQL.Error`
-  will retry with a delay scaled by attempt number. Expected conflicts (serialization failures,
-  deadlocks, and lock-not-available) retry with a shorter delay and higher attempt budget, since
-  they typically resolve quickly once contention clears.
+  Unexpected errors such as `DBConnection.ConnectionError`, `Postgrex.Error`, `MyXQL.Error`, or
+  `QuackDB.Error` will retry with a delay scaled by attempt number. Expected conflicts
+  (serialization failures, deadlocks, and lock-not-available) retry with a shorter delay and higher
+  attempt budget, since they typically resolve quickly once contention clears.
 
   ## Options
 

@@ -2,8 +2,19 @@
 
 _🌟 Looking for changes to [Oban Pro][pro]? Check the [Oban.Pro Changelog][opc] 🌟_
 
-Sharpens resilience under database outages, catches misconfigured `unique` constraints at compile
-time, and optionally scopes telemetry logging to a single instance.
+Adds experimental QuackDB support, sharpens resilience under database outages, catches
+misconfigured `unique` constraints at compile time, and optionally scopes telemetry logging to a
+single instance.
+
+## 🦆 Experimental QuackDB Support
+
+Oban can now use DuckDB through the QuackDB Ecto adapter with `Oban.Engines.QuackDB`. The engine
+includes native migrations, optimistic job claiming, serialized unique insertion, retryable
+transaction conflicts, and support for Cron, Pruner, and Lifeline.
+
+The initial integration is intentionally single-node: use an isolated peer, don't configure a
+prefix, and leave the PostgreSQL-specific Reindexer disabled. QuackDB requires Elixir 1.19 or
+newer.
 
 ## ☣️ Compile-Time Unique State Checks
 

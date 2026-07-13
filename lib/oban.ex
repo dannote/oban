@@ -390,12 +390,13 @@ defmodule Oban do
 
   * `:engine` — facilitates inserting, fetching, and otherwise managing jobs.
 
-    There are three built-in engines: `Oban.Engines.Basic` for Postgres databases,
-    `Oban.Engines.Lite` for SQLite3 databases, and `Oban.Engines.Inline` for simplified testing
-    (only available for `:inline` testing mode).
+    There are five built-in engines: `Oban.Engines.Basic` for Postgres databases,
+    `Oban.Engines.Dolphin` for MySQL databases, `Oban.Engines.Lite` for SQLite3 databases,
+    the experimental `Oban.Engines.QuackDB` for DuckDB through QuackDB, and
+    `Oban.Engines.Inline` for simplified testing (only available for `:inline` testing mode).
 
-    When the `Oban.Engines.Lite` engine is used the `:notifier` and `:peer` are automatically set
-    to `PG` and `isolated` mode, respectively.
+    When the `Oban.Engines.Lite` or `Oban.Engines.QuackDB` engine is used the `:notifier` and
+    `:peer` are automatically set to `PG` and `isolated` mode, respectively.
 
     Additional engines, such as Oban Pro's `SmartEngine` with advanced functionality for Postgres,
     are also available as an add-on.
