@@ -197,7 +197,7 @@ defmodule Oban.MixProject do
 
   defp quackdb_deps do
     if Version.match?(System.version(), ">= 1.19.0") do
-      [{:quackdb, "~> 0.5.15", optional: true}]
+      [{:quackdb, "~> 0.5.16", optional: true}]
     else
       []
     end
