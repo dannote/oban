@@ -1,10 +1,19 @@
-for engine <- [Oban.Engines.Basic, Oban.Engines.Lite, Oban.Engines.Dolphin] do
+engines = [Oban.Engines.Basic, Oban.Engines.Lite, Oban.Engines.Dolphin]
+
+engines =
+  if Code.ensure_loaded?(Ecto.Adapters.QuackDB) do
+    engines ++ [Oban.Engines.QuackDB]
+  else
+    engines
+  end
+
+for engine <- engines do
   defmodule Module.concat(engine, Test) do
-    use Oban.Case, async: true
+    use Oban.Case, async: engine != Oban.Engines.QuackDB
 
     alias Ecto.Adapters.SQL.Sandbox
     alias Ecto.Multi
-    alias Oban.Engines.{Basic, Dolphin, Lite}
+    alias Oban.Engines.{Basic, Dolphin, Lite, QuackDB}
     alias Oban.{Notifier, TelemetryHandler}
 
     @engine engine
@@ -13,14 +22,16 @@ for engine <- [Oban.Engines.Basic, Oban.Engines.Lite, Oban.Engines.Dolphin] do
              Basic -> Repo
              Dolphin -> DolphinRepo
              Lite -> LiteRepo
+             QuackDB -> QuackRepo
            end)
 
-    @moduletag lite: engine == Lite
-    @moduletag dolphin: engine == Dolphin
+    if engine == Lite, do: @moduletag(:lite)
+    if engine == Dolphin, do: @moduletag(:dolphin)
+    if engine == QuackDB, do: @moduletag(:quackdb)
 
-    if engine == Lite do
+    if engine in [Lite, QuackDB] do
       setup do
-        on_exit(fn -> LiteRepo.delete_all(Oban.Job) end)
+        on_exit(fn -> @repo.delete_all(Oban.Job) end)
       end
     end
 
@@ -70,9 +81,12 @@ for engine <- [Oban.Engines.Basic, Oban.Engines.Lite, Oban.Engines.Dolphin] do
         changeset = Worker.new(%{ref: 1}, unique: [period: 60])
 
         fun = fn ->
-          Sandbox.allow(Repo, parent, self())
+          unless @engine == QuackDB do
+            Sandbox.allow(Repo, parent, self())
+          end
 
-          {:ok, %Job{id: id, conflict?: conflict}} = Oban.insert(name, changeset)
+          opts = if @engine == QuackDB, do: [expected_retry: 20], else: []
+          {:ok, %Job{id: id, conflict?: conflict}} = Oban.insert(name, changeset, opts)
 
           {id, conflict}
         end
