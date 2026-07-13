@@ -153,7 +153,8 @@ defmodule Oban.MixProject do
         Oban.Engines.Basic,
         Oban.Engines.Dolphin,
         Oban.Engines.Inline,
-        Oban.Engines.Lite
+        Oban.Engines.Lite,
+        Oban.Engines.QuackDB
       ]
     ]
   end
@@ -191,7 +192,15 @@ defmodule Oban.MixProject do
       {:dialyxir, "~> 1.4", only: [:test, :dev], runtime: false},
       {:ex_doc, "~> 0.38", only: [:test, :dev], runtime: false},
       {:makeup_diff, "~> 0.1", only: [:test, :dev], runtime: false}
-    ]
+    ] ++ quackdb_deps()
+  end
+
+  defp quackdb_deps do
+    if Version.match?(System.version(), ">= 1.19.0") do
+      [{:quackdb, "~> 0.5.15", optional: true}]
+    else
+      []
+    end
   end
 
   defp aliases do

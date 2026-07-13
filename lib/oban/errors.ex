@@ -1,7 +1,7 @@
 defmodule Oban.Errors do
   @moduledoc false
 
-  @optional_errors for mod <- [MyXQL.Error, Postgrex.Error],
+  @optional_errors for mod <- [MyXQL.Error, Postgrex.Error, QuackDB.Error],
                        Code.ensure_loaded?(mod),
                        do: mod
 
@@ -22,6 +22,11 @@ defmodule Oban.Errors do
 
   if Code.ensure_loaded?(MyXQL.Error) do
     def expected_error?(%MyXQL.Error{mysql: %{code: code}}) when code in [1205, 1213], do: true
+  end
+
+  if Code.ensure_loaded?(QuackDB.Error) do
+    def expected_error?(%QuackDB.Error{retriable?: true}), do: true
+    def expected_error?(%QuackDB.Error{message: "Conflict on " <> _rest}), do: true
   end
 
   def expected_error?(_error), do: false

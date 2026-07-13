@@ -1,7 +1,8 @@
 # Installation
 
 Before starting ensure your application has Ecto configured to use [Postgrex][postgrex] for
-Postgres, [EctoSQLite3][ecto_sqlite3] for SQLite3, or [MyXQL][myxql] for use with MySQL.
+Postgres, [EctoSQLite3][ecto_sqlite3] for SQLite3, [MyXQL][myxql] for MySQL, or
+[QuackDB][quackdb] for experimental DuckDB support.
 
 There are three installation mechanisms available:
 
@@ -136,6 +137,33 @@ config :my_app, Oban,
   repo: MyApp.Repo
 ```
 
+### QuackDB (Experimental)
+
+QuackDB support requires Elixir 1.19+, DuckDB 1.5.3+, and an explicit QuackDB dependency:
+
+```elixir
+{:oban, "~> 2.23"},
+{:quackdb, "~> 0.5.15"}
+```
+
+Configure an Ecto repo with `Ecto.Adapters.QuackDB`, connect it to a persistent DuckDB database,
+and select the QuackDB engine:
+
+```elixir
+# config/config.exs
+config :my_app, Oban,
+  engine: Oban.Engines.QuackDB,
+  queues: [default: 10],
+  lifeline: [rescue_after: {2, :hours}],
+  pruner: [max_age: {1, :day}],
+  repo: MyApp.QuackRepo
+```
+
+The engine defaults to the `PG` notifier and an isolated peer. Cron is therefore single-node by
+default, and `Oban.Plugins.Reindexer` must not be enabled. DuckDB's Quack protocol and QuackDB are
+experimental; validate durability and contention behavior for your workload before using them for
+critical jobs.
+
 <!-- tabs-close -->
 
 To prevent Oban from running jobs and plugins during test runs, enable `:testing` mode in
@@ -180,3 +208,4 @@ Oban.
 [postgrex]: https://hex.pm/packages/postgrex
 [ecto_sqlite3]: https://hex.pm/packages/ecto_sqlite3
 [myxql]: https://hex.pm/packages/myxql
+[quackdb]: https://hex.pm/packages/quackdb

@@ -4,6 +4,8 @@ defmodule Oban.ConfigTest do
   alias Oban.Config
   alias Oban.Plugins.{Cron, Pruner}
 
+  @moduletag :no_db
+
   doctest Config
 
   defmodule NotRepo do
@@ -276,6 +278,14 @@ defmodule Oban.ConfigTest do
 
     test "setting sane defaults for the Lite engine" do
       conf = conf(engine: Oban.Engines.Lite)
+
+      refute conf.prefix
+      assert {Oban.Notifiers.PG, []} = conf.notifier
+      assert {Oban.Peers.Isolated, []} = conf.peer
+    end
+
+    test "setting safe defaults for the QuackDB engine" do
+      conf = conf(engine: Oban.Engines.QuackDB)
 
       refute conf.prefix
       assert {Oban.Notifiers.PG, []} = conf.notifier

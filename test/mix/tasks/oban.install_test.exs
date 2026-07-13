@@ -156,6 +156,29 @@ defmodule Mix.Tasks.Oban.InstallTest do
       """)
     end
 
+    test "installing selects the experimental engine for a QuackDB repo" do
+      repo = """
+      defmodule Oban.Test.QuackRepo do
+        @moduledoc false
+
+        use Ecto.Repo, otp_app: :oban, adapter: Ecto.Adapters.QuackDB
+      end
+      """
+
+      [app_name: :oban, files: %{"lib/oban/repo.ex" => repo}]
+      |> test_project()
+      |> Igniter.compose_task("oban.install", ["--repo", "Oban.Test.QuackRepo"])
+      |> assert_has_patch("config/config.exs", """
+        | config :oban, Oban,
+        |   engine: Oban.Engines.QuackDB,
+        |   notifier: Oban.Notifiers.PG,
+        |   queues: [default: 10],
+        |   lifeline: [rescue_after: {2, :hours}],
+        |   pruner: [max_age: {1, :day}],
+        |   repo: Oban.Test.QuackRepo
+      """)
+    end
+
     test "installing with an unsupported adapter repos shows an error" do
       repo = """
       defmodule Oban.Test.TdsRepo do

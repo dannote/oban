@@ -20,6 +20,9 @@ defmodule Oban.Case do
 
   setup context do
     cond do
+      context[:no_db] ->
+        :ok
+
       context[:unboxed] ->
         on_exit(fn ->
           UnboxedRepo.delete_all(Oban.Job)
